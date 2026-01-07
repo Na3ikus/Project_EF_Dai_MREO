@@ -1,0 +1,30 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.1.11312.151 d18.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project_EF_Dai_MREO.Main", "Project_EF_Dai_MREO.Main\Project_EF_Dai_MREO.csproj", "{F2FBCCC7-01D8-4D31-8D65-1EEA2FE99DBC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project_EF_Dai_MREO.Tests", "Project_EF_Dai_MREO.Tests\Project_EF_Dai_MREO.Tests.csproj", "{C87C3957-E853-E55D-9C7B-8DFB557C7246}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F2FBCCC7-01D8-4D31-8D65-1EEA2FE99DBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2FBCCC7-01D8-4D31-8D65-1EEA2FE99DBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2FBCCC7-01D8-4D31-8D65-1EEA2FE99DBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2FBCCC7-01D8-4D31-8D65-1EEA2FE99DBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C87C3957-E853-E55D-9C7B-8DFB557C7246}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C87C3957-E853-E55D-9C7B-8DFB557C7246}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C87C3957-E853-E55D-9C7B-8DFB557C7246}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C87C3957-E853-E55D-9C7B-8DFB557C7246}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {336E9A7E-EB5C-47FB-A5AD-C4B4AB9C2CAC}
+	EndGlobalSection
+EndGlobal
