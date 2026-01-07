@@ -8,7 +8,7 @@ A console-based Vehicle Registration System built with . NET 8 and Entity Framew
 - Entity Framework Core
 - MySQL
 - C#
-- xUnit (Testing)
+- NUnit (Testing)
 - StyleCop Analyzers
 
 ## Project Structure
@@ -22,10 +22,10 @@ Project_EF_Dai_MREO/
 │   ├── App/                                    # Application UI layer
 │   │   ├── Template/                           # Menu templates (Template Method pattern)
 │   │   │   ├── IMenu.cs                        # Menu interface
-│   │   │   ├── BaseCrudMenu.cs                 # Base CRUD menu template
+│   │   │   ├── BaseCrudMenu. cs                 # Base CRUD menu template
 │   │   │   ├── BrandMenu.cs                    # Brand management menu
 │   │   │   ├── CarMenu.cs                      # Car management menu
-│   │   │   ├── CountryMenu.cs                  # Country management menu
+│   │   │   ├── CountryMenu. cs                  # Country management menu
 │   │   │   └── PersonMenu.cs                   # Person management menu
 │   │   ├── UI/                                 # UI components and theming
 │   │   │   ├── IColorTheme.cs                  # Theme interface
@@ -45,7 +45,7 @@ Project_EF_Dai_MREO/
 │   ├── Repository/                             # Repository pattern implementation
 │   │   ├── Patern/                             # Repository patterns
 │   │   │   ├── IUnitOfWork.cs                  # Unit of Work interface
-│   │   │   └── UnitOfWork.cs                   # Unit of Work implementation
+│   │   │   └── UnitOfWork. cs                   # Unit of Work implementation
 │   │   ├── IRepository.cs                      # Generic repository interface
 │   │   ├── TemplateRepository.cs               # Base repository with error handling
 │   │   ├── BrandRepository.cs                  # Brand repository
@@ -64,7 +64,7 @@ Project_EF_Dai_MREO/
 │   ├── ErrorLoggerTests.cs                     # Error logger tests
 │   ├── TemplateRepositoryTests.cs              # Repository pattern tests
 │   ├── WindowTests.cs                          # UI window tests
-│   └── Project_EF_Dai_MREO.Tests.csproj       # Test project file
+│   └── Project_EF_Dai_MREO.Tests. csproj       # Test project file
 │
 ├── . gitignore                                  # Git ignore rules
 ├── Dai_Mreo.sln                                # Visual Studio solution file
@@ -90,16 +90,14 @@ This is a vehicle registration management system (MREO - Міжрайонний 
 - **Error Handling**: Centralized error logging service
 - **Console UI**: Rich console interface with custom theming and table rendering
 - **Database Configuration**: Flexible connection setup with config file support
-- **Code Quality**: Enforced standards using StyleCop and custom analysis rules
+- **Code Quality**:  Enforced standards using StyleCop and custom analysis rules
 - **Unit Tests**: xUnit test coverage for core functionality
 
 ### Entity Model Includes
 - Vehicle-related:  Car, Brand, CarModel, Factory, Color, VehicleType
 - Person-related: Person, Employee, Position, Document, DriverLicense
 - Location-related: Country, Region, City, Address, MreoLocation
-- Registration:  CarOwnersAction, ActionType, Accident
-- And more
-...
-## Author
-[Na3ikus](https://github.com/Na3ikus)
-```
+- Registration: CarOwnersAction, ActionType, Accident
+---
+**Author:** [Na3ikus](https://github.com/Na3ikus)  
+**Repository:** [Project_EF_Dai_MREO](https://github.com/Na3ikus/Project_EF_Dai_MREO)
