@@ -36,25 +36,22 @@
 # For a complete CI/CD sample to get started with GitHub Action workflows for Desktop Applications,
 # refer to https://github.com/microsoft/github-actions-for-desktop-apps
 
-name: .NET Core Desktop
+name: .NET Core CI/CD
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "develop" ]
   pull_request:
     branches: [ "main" ]
 
 jobs:
-
-  build:
-
+  build-and-test:
     strategy:
       matrix:
         configuration: [Debug, Release]
-
-    runs-on: windows-latest  # For a list of available runner types, refer to
-                             # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
-
+    
+    runs-on: windows-latest
+    
     env:
       Solution_Name: Dai_Mreo.sln
       Test_Project_Path: Project_EF_Dai_MREO.Tests\Project_EF_Dai_MREO.Tests.csproj
@@ -65,28 +62,115 @@ jobs:
       with:
         fetch-depth: 0
 
-    # Install the .NET Core workload
+    # Cache NuGet packages для швидшої збірки
+    - name: Cache NuGet packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
     - name: Install .NET Core
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
 
-    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-    - name: Setup MSBuild.exe
+    - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    # Execute all unit tests in the solution
-    - name: Execute unit tests
-      run: dotnet test
+    # Restore dependencies
+    - name: Restore dependencies
+      run: dotnet restore $env:Solution_Name
 
-    # Restore the application to populate the obj folder with RuntimeIdentifiers
-    - name: Restore the application
-      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
-      env:
-        Configuration: ${{ matrix.configuration }}
-
-    # Build the solution
+    # Build з детальним логуванням
     - name: Build the solution
       run: dotnet build $env:Solution_Name --configuration $env:Configuration --no-restore
       env:
         Configuration: ${{ matrix.configuration }}
+
+    # Запуск тестів з покриттям коду
+    - name: Run tests with coverage
+      run: dotnet test $env:Solution_Name --configuration $env:Configuration --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory ./TestResults
+      env:
+        Configuration: ${{ matrix.configuration }}
+
+    # Публікація результатів тестів
+    - name: Publish test results
+      uses: EnricoMi/publish-unit-test-result-action/windows@v2
+      if: always()
+      with:
+        files: TestResults/**/*.trx
+
+    # Завантаження звіту про покриття коду
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v4
+      if: matrix.configuration == 'Release'
+      with:
+        directory: ./TestResults
+        flags: unittests
+        name: codecov-umbrella
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+    # Публікація артефактів (exe/dll)
+    - name: Publish application
+      if: matrix.configuration == 'Release'
+      run: dotnet publish Project_EF_Dai_MREO.Main\Project_EF_Dai_MREO.csproj -c Release -o ./publish
+
+    # Завантаження build артефактів
+    - name: Upload build artifacts
+      if: matrix.configuration == 'Release'
+      uses: actions/upload-artifact@v4
+      with:
+        name: Release-Build-${{ github.sha }}
+        path: ./publish
+
+  # Додатковий job для аналізу коду
+  code-quality:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    # Аналіз стилю коду
+    - name: Run code formatter check
+      run: dotnet format --verify-no-changes --verbosity diagnostic
+      continue-on-error: true
+
+    # Security scan
+    - name: Run security scan
+      uses: securego/gosec@master
+      continue-on-error: true
+
+  # Створення релізу (тільки для тегів)
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [build-and-test, code-quality]
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Publish Release
+      run: dotnet publish Project_EF_Dai_MREO.Main\Project_EF_Dai_MREO.csproj -c Release -o ./release
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: ./release/**
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
