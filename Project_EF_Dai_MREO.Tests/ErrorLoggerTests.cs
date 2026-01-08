@@ -36,7 +36,7 @@ namespace DAI_MREO.Tests
         public void GetAllMessagesAsString_WhenNoMessages_ReturnsNoErrorsText()
         {
             string result = logger.GetAllMessagesAsString();
-            Assert.AreEqual("Помилок не зафіксовано.", result.Trim());
+            Assert.AreEqual("РџРѕРјРёР»РѕРє РЅРµ Р·Р°С„С–РєСЃРѕРІР°РЅРѕ.", result.Trim());
         }
 
         [Test]
