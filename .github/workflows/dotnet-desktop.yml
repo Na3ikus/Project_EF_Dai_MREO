@@ -89,29 +89,11 @@ jobs:
       env:
         Configuration: ${{ matrix.configuration }}
 
-    # Запуск тестів з покриттям коду
-    - name: Run tests with coverage
-      run: dotnet test $env:Solution_Name --configuration $env:Configuration --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory ./TestResults
+    # Запуск тестів
+    - name: Run tests
+      run: dotnet test $env:Solution_Name --configuration $env:Configuration --no-build --verbosity normal
       env:
         Configuration: ${{ matrix.configuration }}
-
-    # Публікація результатів тестів
-    - name: Publish test results
-      uses: EnricoMi/publish-unit-test-result-action/windows@v2
-      if: always()
-      with:
-        files: TestResults/**/*.trx
-
-    # Завантаження звіту про покриття коду
-    - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v4
-      if: matrix.configuration == 'Release'
-      with:
-        directory: ./TestResults
-        flags: unittests
-        name: codecov-umbrella
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
     # Публікація артефактів (exe/dll)
     - name: Publish application
@@ -126,33 +108,10 @@ jobs:
         name: Release-Build-${{ github.sha }}
         path: ./publish
 
-  # Додатковий job для аналізу коду
-  code-quality:
-    runs-on: windows-latest
-    
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
-
-    # Аналіз стилю коду
-    - name: Run code formatter check
-      run: dotnet format --verify-no-changes --verbosity diagnostic
-      continue-on-error: true
-
-    # Security scan
-    - name: Run security scan
-      uses: securego/gosec@master
-      continue-on-error: true
-
   # Створення релізу (тільки для тегів)
   release:
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [build-and-test, code-quality]
+    needs: [build-and-test]
     runs-on: windows-latest
     
     steps:
